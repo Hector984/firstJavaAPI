@@ -22,12 +22,16 @@ public class RestfullapiApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var req = PageRequest.builder().userId(4L).title("Prueba").build();
+		//var req = PageRequest.builder().title("Prueba").build();
 
-		var res = this.pageService.readByTitle("User2 Page");
+		//var res = this.pageService.readByTitle("User2 Page");
+
+		//var res = this.pageService.update(req,"User2 Page");
+
+		//this.pageService.destroy("User2 Page");
 
 		//var res = this.pageService.store(req);
 
-		System.out.println(res);
+		//System.out.println(res);
 	}
 }

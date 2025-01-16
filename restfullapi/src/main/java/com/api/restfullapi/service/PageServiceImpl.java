@@ -28,6 +28,16 @@ public class PageServiceImpl implements PageService {
     private final UserRepository userRepository;
 
     @Override
+    public List<PageEntity> index() {
+
+        List<PageEntity> pages = new ArrayList<PageEntity>();
+
+        this.pageRepository.findAll().forEach(page -> pages.add(page));
+
+        return pages;
+    }
+
+    @Override
     public PageResponse store(PageRequest page) {
 
         final var entity = new PageEntity();
@@ -82,11 +92,11 @@ public class PageServiceImpl implements PageService {
 
         findPage.setTitle(page.getTitle());
 
-        var pageCreated = this.pageRepository.save(findPage);
+        var pageUpdated = this.pageRepository.save(findPage);
 
         final var response = new PageResponse();
 
-        BeanUtils.copyProperties(pageCreated, response);
+        BeanUtils.copyProperties(pageUpdated, response);
 
         return response;
     }
@@ -94,5 +104,12 @@ public class PageServiceImpl implements PageService {
     @Override
     public void destroy(String title) {
 
+        if(this.pageRepository.existsByTitle(title)) {
+            log.info("The page was found and deleted");
+            this.pageRepository.deleteByTitle(title);
+        } else {
+            log.error("Error when deleting");
+            throw new IllegalArgumentException("Cannot delete the page");
+        }
     }
 }
