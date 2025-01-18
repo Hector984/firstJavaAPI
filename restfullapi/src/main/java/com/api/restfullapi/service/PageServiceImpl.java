@@ -4,6 +4,7 @@ import com.api.restfullapi.dtos.PageRequest;
 import com.api.restfullapi.dtos.PageResponse;
 import com.api.restfullapi.dtos.PostResponse;
 import com.api.restfullapi.entity.PageEntity;
+import com.api.restfullapi.exceptions.InvalidTitleException;
 import com.api.restfullapi.repository.PageRepository;
 import com.api.restfullapi.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,9 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public PageResponse store(PageRequest page) {
+
+        // Validate the title
+        this.validateTitle(page.getTitle());
 
         final var entity = new PageEntity();
         BeanUtils.copyProperties(page, entity);
@@ -87,6 +91,9 @@ public class PageServiceImpl implements PageService {
     @Override
     public PageResponse update(PageRequest page, String title) {
 
+        //Validate the data
+        this.validateTitle(page.getTitle());
+
         final var findPage = this.pageRepository.findByTitle(title)
                 .orElseThrow(() -> new IllegalArgumentException("Title not found"));
 
@@ -110,6 +117,13 @@ public class PageServiceImpl implements PageService {
         } else {
             log.error("Error when deleting");
             throw new IllegalArgumentException("Cannot delete the page");
+        }
+    }
+
+    private void validateTitle(String title) {
+
+        if(title.contains("wey")) {
+            throw new InvalidTitleException("Title cannot containt bad words");
         }
     }
 }
